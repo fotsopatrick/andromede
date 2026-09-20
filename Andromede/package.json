@@ -1,0 +1,33 @@
+{
+  "name": "sanity-challenge-mcp-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sanity Challenge (DEV.to) — Path 1 : agent MCP qui tranche des contradictions de règles via le Sanity Context MCP endpoint. Aucune hallucination tolérée.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "agent": "node agent/src/index.ts",
+    "seed": "node scripts/seed-sanity.ts",
+    "seed:local": "node scripts/build-local-store.ts",
+    "mcp:local": "node mcp-local/context-server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.ts",
+    "transcript": "node scripts/run-transcript.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@sanity/client": "^6.28.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.0.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "sanity": "^6.15.0",
+    "sass": "^1.104.1",
+    "styled-components": "^6.5.3",
+    "typescript": "^5.7.0"
+  }
+}

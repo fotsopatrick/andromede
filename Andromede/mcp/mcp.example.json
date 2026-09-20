@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "aero-kit-local": {
+      "type": "http",
+      "url": "http://127.0.0.1:8970/mcp"
+    },
+    "aero-kit-sanity-context": {
+      "type": "http",
+      "url": "https://api.sanity.io/v1/context/organizations/{orgId}/mcp/{endpointName}",
+      "headers": {
+        "Authorization": "Bearer <personal-access-token>"
+      }
+    }
+  }
+}
