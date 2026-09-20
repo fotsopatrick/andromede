@@ -1,0 +1,465 @@
+[
+  {
+    "description": "Une règle normative : une spécification officielle, une contrainte technique ou de sécurité, datée et taguée, avec sa valeur chiffrée formelle (normativeValue).",
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Identifiant contractuel de la règle, ex : AERO-POL-2026-104.",
+        "name": "id",
+        "type": "string",
+        "title": "Rule ID"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            "draft",
+            "active",
+            "deprecated"
+          ]
+        },
+        "initialValue": "draft",
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "draft",
+                  "active",
+                  "deprecated"
+                ]
+              }
+            ]
+          }
+        ],
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "effectiveDate",
+        "type": "date",
+        "title": "Effective date"
+      },
+      {
+        "description": "Portée de la règle, ex : module:ctrl-7.",
+        "name": "scope",
+        "type": "string"
+      },
+      {
+        "description": "Énoncé complet en langage naturel.",
+        "name": "body",
+        "type": "text"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "tags",
+        "type": "array"
+      },
+      {
+        "description": "La valeur chiffrée que la règle impose. C’est le champ sur lequel l’agent raisonne formellement, il ne parse jamais le corps de texte.",
+        "name": "normativeValue",
+        "type": "number",
+        "title": "Normative value"
+      },
+      {
+        "description": "Unité de la valeur normative, ex : °C, W, m.",
+        "name": "normativeUnit",
+        "type": "string",
+        "title": "Normative unit"
+      },
+      {
+        "initialValue": 1,
+        "description": "Niveau de précédence de la règle (1 = base, plus haut = prioritaire).",
+        "name": "precedenceLevel",
+        "type": "number",
+        "title": "Precedence level"
+      }
+    ],
+    "name": "policyOrRule",
+    "type": "document",
+    "title": "Policy / Rule"
+  },
+  {
+    "description": "Un amendement ou errata qui cible une règle existante (targetRuleRef), modifie son énoncé, et porte un niveau de précédence permettant l’arbitrage automatique.",
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Ex : AERO-ERR-2026-091.",
+        "name": "id",
+        "type": "string",
+        "title": "Amendment ID"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            "draft",
+            "active",
+            "deprecated"
+          ]
+        },
+        "initialValue": "draft",
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "draft",
+                  "active",
+                  "deprecated"
+                ]
+              }
+            ]
+          }
+        ],
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "effectiveDate",
+        "type": "date",
+        "title": "Effective date"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "La règle originale que cet amendement corrige.",
+        "to": [
+          {
+            "type": "policyOrRule"
+          }
+        ],
+        "name": "targetRuleRef",
+        "type": "reference",
+        "title": "Target rule"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Security override",
+              "value": "security-override"
+            },
+            {
+              "title": "Operational conflict",
+              "value": "operational-conflict"
+            },
+            {
+              "title": "Version drift",
+              "value": "version-drift"
+            },
+            {
+              "title": "Editorial fix",
+              "value": "editorial-fix"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "security-override",
+                  "operational-conflict",
+                  "version-drift",
+                  "editorial-fix"
+                ]
+              }
+            ]
+          }
+        ],
+        "name": "contradictionType",
+        "type": "string",
+        "title": "Contradiction type"
+      },
+      {
+        "description": "L’énoncé qui remplace celui de la règle ciblée.",
+        "name": "amendedStatement",
+        "type": "text",
+        "title": "Amended statement"
+      },
+      {
+        "description": "La nouvelle valeur chiffrée formelle.",
+        "name": "amendedValue",
+        "type": "number",
+        "title": "Amended value"
+      },
+      {
+        "description": "Niveau de précédence de l’amendement. S’il est strictement supérieur à celui de la règle ciblée, l’amendement prime.",
+        "name": "precedenceLevel",
+        "type": "number",
+        "title": "Precedence level"
+      },
+      {
+        "description": "Justification textuelle de l’arbitrage.",
+        "name": "resolutionNote",
+        "type": "text",
+        "title": "Resolution note"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "description": "Lien vers le document source (bulletin, avis, PDF officiel).",
+        "name": "sourceUrl",
+        "type": "url",
+        "title": "Source URL"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "tags",
+        "type": "array"
+      }
+    ],
+    "name": "errataOrAmendment",
+    "type": "document",
+    "title": "Errata / Amendment"
+  },
+  {
+    "description": "Dossier d’arbitrage : la photographie d’un conflit tranché — le scénario de requête, les sources en conflit, la source faisant autorité, le verdict final posé par un humain.",
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Ex : AERO-CASE-2026-011.",
+        "name": "id",
+        "type": "string",
+        "title": "Case ID"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Le scénario de question auquel ce dossier répond. L’agent y mappe les questions utilisateur.",
+        "name": "queryScenario",
+        "type": "string",
+        "title": "Query scenario"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "La source qui fait autorité pour ce scénario.",
+        "to": [
+          {
+            "type": "policyOrRule"
+          },
+          {
+            "type": "errataOrAmendment"
+          }
+        ],
+        "name": "authoritativeSourceRef",
+        "type": "reference",
+        "title": "Authoritative source"
+      },
+      {
+        "description": "Les sources qui se contredisaient avant l’arbitrage.",
+        "of": [
+          {
+            "to": [
+              {
+                "type": "policyOrRule"
+              },
+              {
+                "type": "errataOrAmendment"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to policy / rule or errata / amendment"
+          }
+        ],
+        "name": "conflictingSources",
+        "type": "array",
+        "title": "Conflicting sources"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Le verdict formel posé, tel qu’il doit être restitué.",
+        "name": "finalVerdict",
+        "type": "text",
+        "title": "Final verdict"
+      },
+      {
+        "name": "decidedBy",
+        "type": "string",
+        "title": "Decided by"
+      },
+      {
+        "name": "decisionDate",
+        "type": "date",
+        "title": "Decision date"
+      }
+    ],
+    "name": "resolutionCase",
+    "type": "document"
+  }
+]

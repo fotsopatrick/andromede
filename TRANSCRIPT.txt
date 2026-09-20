@@ -1,0 +1,139 @@
+AERO-KIT — RULE VERDICT AGENT
+Session transcript — Sanity Challenge (DEV.to) Path 1
+Date (UTC) : 2026-09-20T16:10:58.083Z
+Sanity     : project 3b1mty75 · dataset production · docs seeded from scripts/seed-data.ts
+Endpoint  : Sanity Context MCP (mode GROQ) — clone local fidèle du endpoint hébergé
+            (connexion MCP Streamable HTTP réelle, mêmes 4 outils)
+Schémas    : policyOrRule, errataOrAmendment, resolutionCase (seeded, _id déterministes)
+Banc       : node --test tests/ → 9 tests verts (4 garde-fous métier + 5 infra)
+
+==============================================================================
+
+> Q1 — Requête univoque (puissance)
+Q : Quelle est la puissance électrique maximale du module CTRL-7 ?
+
+R : VERDICT — Requête univoque.
+Valeur normative retenue : 500 W
+Verdict : 500 W — valeur normative unique et non amendée.
+
+Sources citées :
+  - policyOrRule/rule-ctrl7-power-spec — Spécification officielle — Puissance du module CTRL-7 (réf Sanity : rule-ctrl7-power-spec)
+      version 1.0 · statut active
+      précédence 1 · valeur 500 W
+      « La puissance électrique maximale du module CTRL-7 est de 500 W. »
+
+Trace MCP de la résolution :
+  • initial_context
+      ↳ mode GROQ, schéma : policyOrRule
+  • schema_explorer
+      ↳ champs de policyOrRule vérifiés avant requête
+  • groq_query
+      query  : *[_type == "policyOrRule" && status == "active" && "power" in tags]{_id, _type, id, title, version, status, effectiveDate, body, tags, scope, normativeValue, normativeUnit, precedenceLevel}
+      ↳ règles actives taguées #power (1 document(s))
+  • groq_query
+      query  : *[_type == "errataOrAmendment" && status == "active" && targetRuleRef._ref == "rule-ctrl7-power-spec"]{_id, _type, id, title, version, status, effectiveDate, targetRuleRef, contradictionType, amendedStatement, amendedValue, precedenceLevel, resolutionNote, sourceUrl}
+      ↳ amendements cibles de rule-ctrl7-power-spec (targetRuleRef) (0 document(s))
+  • groq_query
+      query  : *[_type == "resolutionCase" && queryScenario match "power"][0]{_id, _type, id, title, queryScenario, authoritativeSourceRef, conflictingSources, finalVerdict, decidedBy, decisionDate}
+      ↳ dossier d'arbitrage du scénario (power, puissance) (0 document(s))
+
+------------------------------------------------------------------------------
+
+> Q2 — Contradiction règle/errata (température)
+Q : Quelle est la température maximale configurable du module CTRL-7 ?
+
+R : RÉSOLUTION — Contradiction détectée puis arbitrée formellement.
+Valeur normative retenue : 60 °C
+Verdict : 60 °C — l'amendement AERO-ERR-2026-091 (security-override) prévaut sur sa règle ciblée : precedenceLevel 3 > 1. Cohérent avec le dossier d'arbitrage case-ctrl7-temp-max.
+Note d’arbitrage : Dossier case-ctrl7-temp-max (2026-06-15, AERO-KIT — Responsable conformité) : 60 °C — l'amendement de sécurité AERO-ERR-2026-091 (bulletin CTRL7-SEC-2026-02) prévaut sur la spécification AERO-POL-2026-104..
+
+Sources citées :
+  - policyOrRule/rule-ctrl7-temp-spec — Spécification officielle — Régulation thermique du module CTRL-7 (réf Sanity : rule-ctrl7-temp-spec)
+      version 1.0 · statut active
+      précédence 1 · valeur 75 °C
+      « Conformément à la spécification produit AERO-POL-2026-104, la température maximale configurable du module de régulation CTRL-7 est de 75 °C. »
+  - errataOrAmendment/errata-ctrl7-temp-sec — Amendement de sécurité — CTRL-7 : plafond thermique (réf Sanity : errata-ctrl7-temp-sec)
+      version 1.2 · statut active
+      précédence 3 · valeur 60 °C
+      « En application du bulletin de sécurité CTRL7-SEC-2026-02, la température maximale configurable du module CTRL-7 est ramenée à 60 °C. »
+      source : https://kb.aero-kit.example/security/CTRL7-SEC-2026-02
+
+Trace MCP de la résolution :
+  • initial_context
+      ↳ mode GROQ, schéma : policyOrRule
+  • schema_explorer
+      ↳ champs de policyOrRule vérifiés avant requête
+  • groq_query
+      query  : *[_type == "policyOrRule" && status == "active" && "temperature" in tags]{_id, _type, id, title, version, status, effectiveDate, body, tags, scope, normativeValue, normativeUnit, precedenceLevel}
+      ↳ règles actives taguées #temperature (1 document(s))
+  • groq_query
+      query  : *[_type == "errataOrAmendment" && status == "active" && targetRuleRef._ref == "rule-ctrl7-temp-spec"]{_id, _type, id, title, version, status, effectiveDate, targetRuleRef, contradictionType, amendedStatement, amendedValue, precedenceLevel, resolutionNote, sourceUrl}
+      ↳ amendements cibles de rule-ctrl7-temp-spec (targetRuleRef) (1 document(s))
+  • groq_query
+      query  : *[_type == "resolutionCase" && queryScenario match "temperature"][0]{_id, _type, id, title, queryScenario, authoritativeSourceRef, conflictingSources, finalVerdict, decidedBy, decisionDate}
+      ↳ dossier d'arbitrage du scénario (temperature, température) (1 document(s))
+  • groq_query
+      query  : *[_id == "errata-ctrl7-temp-sec"][0]{_id, _type, id, title, version, status, body, normativeValue, normativeUnit, precedenceLevel, amendedStatement, amendedValue, resolutionNote, sourceUrl}
+      ↳ source d'autorité errata-ctrl7-temp-sec du dossier (1 document(s))
+
+------------------------------------------------------------------------------
+
+> Q3 — Contradiction non arbitrée (altitude)
+Q : Jusqu'à quelle altitude maximale puis-je utiliser le module CTRL-7 ?
+
+R : GARDE-FOU — Contradiction non résolue, j’interdis l’extrapolation.
+2 valeurs actives différentes se contredisent pour « Jusqu'à quelle altitude maximale puis-je utiliser le module CTRL-7 ? » et aucun amendement actif ni dossier d'arbitrage cohérent ne tranche. J'écarte toute extrapolation : une contradiction non arbitrée interdit de deviner. Pour trancher il faut (a) un errataOrAmendment actif ciblant l'une des règles avec precedenceLevel supérieur, ou (b) un resolutionCase posé par un humain.
+Sources en conflit :
+  - policyOrRule/rule-ctrl7-altitude-install — Contrainte d'installation — Altitude maximale du CTRL-7
+      version 1.0 · statut active
+      précédence 1 · valeur 2000 m
+      « Le module CTRL-7 peut être installé jusqu'à une altitude de 2000 m. »
+  - policyOrRule/rule-ctrl7-altitude-maintenance — Contrainte de maintenance — Altitude maximale du CTRL-7
+      version 1.1 · statut active
+      précédence 1 · valeur 1500 m
+      « La garantie de maintenance du module CTRL-7 cesse au-delà d'une altitude de 1500 m : toute intervention couverte est exclue au-dessus de ce seuil. »
+
+Trace MCP de la résolution :
+  • initial_context
+      ↳ mode GROQ, schéma : policyOrRule
+  • schema_explorer
+      ↳ champs de policyOrRule vérifiés avant requête
+  • groq_query
+      query  : *[_type == "policyOrRule" && status == "active" && "altitude" in tags]{_id, _type, id, title, version, status, effectiveDate, body, tags, scope, normativeValue, normativeUnit, precedenceLevel}
+      ↳ règles actives taguées #altitude (2 document(s))
+  • groq_query
+      query  : *[_type == "errataOrAmendment" && status == "active" && targetRuleRef._ref == "rule-ctrl7-altitude-install"]{_id, _type, id, title, version, status, effectiveDate, targetRuleRef, contradictionType, amendedStatement, amendedValue, precedenceLevel, resolutionNote, sourceUrl}
+      ↳ amendements cibles de rule-ctrl7-altitude-install (targetRuleRef) (0 document(s))
+  • groq_query
+      query  : *[_type == "errataOrAmendment" && status == "active" && targetRuleRef._ref == "rule-ctrl7-altitude-maintenance"]{_id, _type, id, title, version, status, effectiveDate, targetRuleRef, contradictionType, amendedStatement, amendedValue, precedenceLevel, resolutionNote, sourceUrl}
+      ↳ amendements cibles de rule-ctrl7-altitude-maintenance (targetRuleRef) (0 document(s))
+  • groq_query
+      query  : *[_type == "resolutionCase" && queryScenario match "altitude"][0]{_id, _type, id, title, queryScenario, authoritativeSourceRef, conflictingSources, finalVerdict, decidedBy, decisionDate}
+      ↳ dossier d'arbitrage du scénario (altitude, hauteur) (0 document(s))
+
+------------------------------------------------------------------------------
+
+> Q4 — Donnée absente (autre module)
+Q : Quelle est la politique de rétention des journaux du module RMX-900 ?
+
+R : CLARIFICATION — Aucune extrapolation tant que la donnée n’est pas établie.
+« Quelle est la politique de rétention des journaux du module RMX-900 ? » ne correspond à aucun scénario couvert par la base de connaissances (température, puissance, altitude sur le module CTRL-7). Je ne peux pas répondre : aucune donnée ne porte sur ce sujet. Précisez la question ou le paramètre à vérifier.
+
+Trace MCP de la résolution :
+  • initial_context
+      ↳ mode GROQ, schéma : policyOrRule
+
+------------------------------------------------------------------------------
+
+FIN DE SESSION.
+
+Preuves vérifiées par le banc :
+  TES1 standard        → 500 W, réf policyOrRule/rule-ctrl7-power-spec
+  TES2 contradiction   → 60 °C via errata-ctrl7-temp-sec (precedenceLevel 3 > 1),
+                          corroboration case-ctrl7-temp-max
+  TES3 anti-RAG        → le plein-texte est indécidable (75 vs 60 à égalité) ;
+                          les relations structurées tranchent
+  TES4 garde-fous      → refus d'extrapoler (altitude 2000 vs 1500 m, aucune
+                          précédence active) et demande de clarification (hors KB)
+
+Zero hallucination : jamais de verdict sur données contradictoires non arbitrées.
